@@ -1,0 +1,52 @@
+import express, { Application } from "express";
+import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
+import "reflect-metadata";
+import { createConnection } from "typeorm";
+import { cleanEnv, port, str, url } from "envalid";
+import * as cors from "cors";
+
+require("dotenv").config();
+cleanEnv(process.env, {
+  PORT: port(),
+  POSTGRES_DB: str(),
+  POSTGRES_HOST: str(),
+  POSTGRES_PASSWORD: str(),
+  POSTGRES_PORT: port(),
+  POSTGRES_USER: str(),
+});
+
+import Router from "./routes";
+import dbConfig from "./config/database";
+
+const PORT = process.env.PORT || 8002;
+
+const app: Application = express();
+
+app.use(express.json());
+app.use(morgan("tiny"));
+app.use(express.static("public"));
+app.use(cors.default());
+
+app.use(
+  "/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(undefined, {
+    swaggerOptions: {
+      url: "/swagger.json",
+    },
+  })
+);
+
+app.use(Router);
+
+createConnection(dbConfig)
+  .then((_connection) => {
+    app.listen(PORT, () => {
+      console.log("Server is running on port", PORT);
+    });
+  })
+  .catch((err) => {
+    console.log("Unable to connect to db", err);
+    process.exit(1);
+  });
