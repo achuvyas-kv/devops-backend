@@ -2,7 +2,7 @@
   "family": "order-service",
   "networkMode": "bridge",
   "requiresCompatibilities": ["EC2"],
-  "executionRoleArn": "arn:aws:iam::YOUR_ACCOUNT_ID:role/ecsTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::402338187344:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
       "name": "db",
@@ -34,7 +34,7 @@
     },
     {
       "name": "app",
-      "image": "YOUR_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/order-service:latest",
+      "image": "402338187344.dkr.ecr.ap-south-1.amazonaws.com/order-service:latest",
       "essential": true,
       "cpu": 256,
       "memory": 512,
