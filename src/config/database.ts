@@ -1,8 +1,8 @@
-import { ConnectionOptions } from "typeorm";
+import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 
 import { Order } from "../models";
 
-const config: ConnectionOptions = {
+const config: PostgresConnectionOptions = {
   type: "postgres",
   host: process.env.POSTGRES_HOST || "localhost",
   port: Number(process.env.POSTGRES_PORT) || 5432,
