@@ -54,6 +54,7 @@
         }
       ],
       "environment": [
+        { "name": "PORT", "value": "8002" },
         { "name": "POSTGRES_HOST", "value": "db" },
         { "name": "POSTGRES_PORT", "value": "5432" },
         { "name": "POSTGRES_USER", "value": "postgres" },
