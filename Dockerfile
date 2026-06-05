@@ -1,19 +1,16 @@
-FROM node:12
-
-RUN mkdir -p /home/node/app/node_modules
+FROM node:18
 
 WORKDIR /home/node/app
 
 COPY package*.json ./
-
-RUN npm install
+RUN npm ci
 
 COPY . .
-
-#test
-
-EXPOSE 80 8002
-
 RUN npm run build
 
-CMD [ "npm", "start" ]
+# Fail the image build early if pg is missing (TypeORM needs it at runtime)
+RUN node -e "require('pg')"
+
+EXPOSE 8002
+
+CMD ["node", "build/index.js"]
