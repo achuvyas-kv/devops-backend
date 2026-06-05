@@ -10,6 +10,12 @@ router.get("/", async (_req, res) => {
   return res.send(response);
 });
 
+router.post("/", async (req, res) => {
+  const controller = new OrderController();
+  const response = await controller.createOrder(req.body);
+  return res.send(response);
+});
+
 router.get("/health", async (_req, res) => {
   const controller = new HealthController();
   const response = await controller.getMessage();
