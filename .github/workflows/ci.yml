@@ -52,7 +52,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build image
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -60,9 +60,32 @@ jobs:
         run: |
           IMAGE="$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG"
           docker build --pull --no-cache -t "$IMAGE" .
-          docker run --rm "$IMAGE" node -e "require('pg'); console.log('pg ok in image')"
-          docker push "$IMAGE"
           echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke test — full stack must start and connect to db
+        env:
+          APP_IMAGE: ${{ steps.build-image.outputs.image }}
+        run: |
+          docker compose -f docker-compose.test.yml up -d
+          echo "Waiting for app to be ready..."
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8002/docs > /dev/null 2>&1; then
+              echo "App is up and connected to db!"
+              exit 0
+            fi
+            echo "Attempt $i/30: not ready yet, retrying in 3s..."
+            sleep 3
+          done
+          echo "App failed to start within 90 seconds"
+          docker compose -f docker-compose.test.yml logs
+          exit 1
+
+      - name: Tear down smoke test
+        if: always()
+        run: docker compose -f docker-compose.test.yml down -v
+
+      - name: Push image to Amazon ECR
+        run: docker push ${{ steps.build-image.outputs.image }}
 
       - name: Render Amazon ECS task definition
         id: render-task-def

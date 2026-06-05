@@ -45,6 +45,8 @@
 
       "command": ["node", "build/index.js"],
 
+      "links": ["db"],
+
       "essential": true,
 
       "cpu": 256,
