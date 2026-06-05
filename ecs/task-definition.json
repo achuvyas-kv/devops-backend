@@ -36,6 +36,7 @@
     {
       "name": "app",
       "image": "402338187344.dkr.ecr.ap-south-1.amazonaws.com/order-service:latest",
+      "command": ["node", "build/index.js"],
       "essential": true,
       "cpu": 256,
       "memory": 512,

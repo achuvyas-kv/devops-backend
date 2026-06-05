@@ -1,6 +1,6 @@
-FROM node:18
+FROM node:18 AS builder
 
-WORKDIR /home/node/app
+WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci
@@ -8,8 +8,17 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# Fail the image build early if pg is missing (TypeORM needs it at runtime)
-RUN node -e "require('pg')"
+FROM node:18
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/public ./public
+
+RUN node -e "require('pg'); console.log('pg installed:', require('pg/package.json').version)"
 
 EXPOSE 8002
 
