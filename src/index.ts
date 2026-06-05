@@ -8,7 +8,6 @@ import * as cors from "cors";
 
 require("dotenv").config();
 cleanEnv(process.env, {
-  PORT: port(),
   POSTGRES_DB: str(),
   POSTGRES_HOST: str(),
   POSTGRES_PASSWORD: str(),
@@ -19,7 +18,7 @@ cleanEnv(process.env, {
 import Router from "./routes";
 import dbConfig from "./config/database";
 
-const PORT = process.env.PORT || 8002;
+const PORT = Number(process.env.PORT) || 8002;
 
 const app: Application = express();
 
