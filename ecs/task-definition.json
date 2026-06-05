@@ -28,7 +28,8 @@
         "options": {
           "awslogs-group": "/ecs/order-service",
           "awslogs-region": "ap-south-1",
-          "awslogs-stream-prefix": "db"
+          "awslogs-stream-prefix": "db",
+          "awslogs-create-group": "true"
         }
       }
     },
@@ -64,7 +65,8 @@
         "options": {
           "awslogs-group": "/ecs/order-service",
           "awslogs-region": "ap-south-1",
-          "awslogs-stream-prefix": "app"
+          "awslogs-stream-prefix": "app",
+          "awslogs-create-group": "true"
         }
       }
     }
